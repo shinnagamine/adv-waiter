@@ -3,15 +3,15 @@
 2. [How to use AdvWaiter](#2-how-to-use-advwaiter)  
 	+ [Direct script loading (CDN)](#direct-script-loading-cdn)  
 	+ [Module importing (ES6)](#module-importing-es6)
-3. [API Reference](#3-api-reference)  
+3. [API References](#3-api-references)  
 	+ [wait(intervalOrOpts, options)](#waitintervaloropts-options)  
 		+ [Interval](#interval)  
 		+ [Options](#options)  
-			(1) [while-waiting](#while-waiting)  
-			(2) [until-waiting](#until-waiting)  
-			(3) [callback](#callback)  
-			(4) [timeout](#timeout)  
-			(5) [debug](#debug)  
+			(1) [while-waiting](#1-while-waiting)  
+			(2) [until-waiting](#2-until-waiting)  
+			(3) [callback](#3-callback)  
+			(4) [timeout](#4-timeout)  
+			(5) [debug](#5-debug)  
 
 ## 1. Overview
 ***AdvWaiter*** is a JavaScript library/module that provides a couple of wait functions to simplify the source code and make it more readable.
