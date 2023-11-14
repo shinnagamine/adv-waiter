@@ -26,22 +26,22 @@
  *
  *     @example
  *     // Waits for 1000ms.
- *     wait(1000);
+ *     await wait(1000);
  *
  *     // Waits for 100ms.
- *     wait(null);
- *     wait(0);
- *     wait('');
+ *     await wait(null);
+ *     await wait(0);
+ *     await wait('');
  *
  *   If ONLY first argument 'intervalOrOpts' is specified as a JSON,
  *   the first argument is treated as options, and the 'wait time' is set to 100 milliseconds.
  *
  *     @example
  *     // The first argument is treated as options.
- *     wait({ until: () => ... });
+ *     await wait({ until: () => ... });
  *
  *     // The above code is equivalent to the following code.
- *     wait(100, { until: () => ... });
+ *     await wait(100, { until: () => ... });
  *
  * 2. Options
  *   If 'options.until' is specified and 'options.untilResultExistsIn' is NOT specified,
@@ -49,7 +49,7 @@
  *
  *     @example
  *     // Waits until the seconds of the current time reach 0.
- *     wait({
+ *     await wait({
  *       until: () => new Date().getSeconds() === 0
  *     });
  *
@@ -61,7 +61,7 @@
  *     @example
  *     // Waits until the seconds of the current time reach 0, 15, 30 or 45,
  *     // then returns the seconds of the reached time.
- *     wait({
+ *     await wait({
  *       until: () => new Date().getSeconds(),
  *       untilResultExistsIn: [ 0, 15, 30, 45 ]
  *     });
@@ -71,7 +71,7 @@
  *
  *     @example
  *     // Waits while the seconds of the current time is less than 30.
- *     wait({
+ *     await wait({
  *       while: () => new Date().getSeconds() < 30
  *     });
  *
@@ -83,7 +83,7 @@
  *     @example
  *     // Waits while the seconds of the current time is 0, 1, 2, 3 or 4,
  *     // then returns the seconds of the reached time.
- *     wait({
+ *     await wait({
  *       while: () => new Date().getSeconds(),
  *       whileResultExistsIn: [ 0, 1, 2, 3, 4 ]
  *     });
@@ -92,13 +92,13 @@
  *
  *     @example
  *     // Waits for 5 seconds, then outputs a message to the console.
- *     wait(5000, {
+ *     await wait(5000, {
  *       callback: () => console.log('5 seconds have passed.')
  *     });
  *
  *     // Waits until the seconds of the current time become 0,
  *     // then outputs a message to the console.
- *     wait({
+ *     await wait({
  *       until: () => new Date().getSeconds() === 0,
  *       callback: () => console.log('Time is up!')
  *     });
@@ -108,7 +108,7 @@
  *
  *     @example
  *     // Waiting process will terminate after 3 seconds, then outputs a message to the console.
- *     wait({
+ *     await wait({
  *       while: () => 1 < 2,
  *       timeout: 3000,
  *       onTimeout: () => console.log('Waiting process is terminated...')
