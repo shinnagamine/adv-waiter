@@ -13,49 +13,160 @@
 /**
  * Waits for the specified time or options.
  *
- * If the options.until function is specified, it waits until the result of the options.until function
- * matches an element in the options.untilResultExistsIn array.
+ * 1. Interval
+ *   If NO arguments are specified, it waits for 100 milliseconds as a default wait time.
  *
- * If the options.while function is specified, it waits while the result of the options.while function
- * matches an element in the options.whileResultExistsIn array.
+ *     @example
+ *     // Waits for 100ms.
+ *     wait();
  *
- * If both options.until and options.while are unspecified, it waits for the time specified in intervalOrOpts.
+ *   If ONLY first argument 'intervalOrOpts' is specified as a numeric value,
+ *   it waits for the time specified in 'intervalOrOpts'.
+ *   [Note] If a FALSY value is specified, the default value of 100 is set as the 'wait time'.
  *
- * If the options.callback function is specified, it executes the options.callback function after waiting.
+ *     @example
+ *     // Waits for 1000ms.
+ *     wait(1000);
  *
- * Note: If a JSON is specified as the first argument and the second argument is unspecified,
- * the first argument is treated as options, and the wait time is set to 100 milliseconds.
- * 
- * @param {number|Object} intervalOrOpts - Wait time in milliseconds or options.
- *                      If a JSON is specified and the second argument is unspecified,
- *                      the first argument is treated as options, and the wait time is set to 100 milliseconds.
+ *     // Waits for 100ms.
+ *     wait(null);
+ *     wait(0);
+ *     wait('');
  *
- * @param {Object} [options] - Optional JSON data.
+ *   If ONLY first argument 'intervalOrOpts' is specified as a JSON,
+ *   the first argument is treated as options, and the 'wait time' is set to 100 milliseconds.
  *
- * @param {function} [options.callback] - Function to execute after waiting.
+ *     @example
+ *     // The first argument is treated as options.
+ *     wait({ until: () => ... });
  *
- * @param {function} [options.until] - Condition check function for waiting until a specified condition is satisfied.
- *                                     If options.untilResultExistsIn is specified:
- *                                       Waits until the result of the options.until function matches an element
- *                                       in the options.untilResultExistsIn array.
- *                                     If options.untilResultExistsIn is unspecified:
- *                                       Waits while the result of the options.until function is falsy.
- * @param {Array} [options.untilResultExistsIn] - Result array for the until-wait condition function.
+ *     // The above code is equivalent to the following code.
+ *     wait(100, { until: () => ... });
  *
- * @param {function} [options.while] - Condition check function for waiting while a specified condition is satisfied.
- *                                      If options.whileResultExistsIn is specified:
- *                                        Waits while the result of the options.while function matches an element
- *                                        in the options.whileResultExistsIn array.
- *                                      If options.whileResultExistsIn is unspecified:
- *                                        Waits while the result of the options.while function is truthy.
- * @param {Array} [options.whileResultExistsIn] - Result array for the while-wait condition function.
+ * 2. Options
+ *   If 'options.until' is specified and 'options.untilResultExistsIn' is NOT specified,
+ *   it waits until 'options.until' function returns truthy value.
  *
- * @param {number} [options.timeout] - Timeout period in milliseconds.
- * @param {function} [options.onTimeout] - Function to execute on timeout.
+ *     @example
+ *     // Waits until the seconds of the current time reach 0.
+ *     wait({
+ *       until: () => new Date().getSeconds() === 0
+ *     });
  *
- * @param {function} [options.showDatetime] - Whether to log the current datetime on function call (for debugging).
- * @returns {*} - If options.untilResultExistsIn or options.whileResultExistsIn is specified,
- *                returns the result of the function.
+ *   If both 'options.until' and 'options.untilResultExistsIn' are specified,
+ *   it waits until the result of 'options.until' function matches an element
+ *   in 'options.untilResultExistsIn' array.
+ *   The function returns the result of 'options.until' function.
+ *
+ *     @example
+ *     // Waits until the seconds of the current time reach 0, 15, 30 or 45,
+ *     // then returns the seconds of the reached time.
+ *     wait({
+ *       until: () => new Date().getSeconds(),
+ *       untilResultExistsIn: [ 0, 15, 30, 45 ]
+ *     });
+ *
+ *   If 'options.while' is specified and 'options.whileResultExistsIn' is NOT specified,
+ *   it waits while 'options.while' function returns truthy value.
+ *
+ *     @example
+ *     // Waits while the seconds of the current time is less than 30.
+ *     wait({
+ *       while: () => new Date().getSeconds() < 30
+ *     });
+ *
+ *   If both 'options.while' and 'options.whileResultExistsIn' are specified,
+ *   it waits while the result of 'options.while' function matches an element
+ *   in 'options.whileResultExistsIn' array.
+ *   The function returns the result of 'options.while' function.
+ *
+ *     @example
+ *     // Waits while the seconds of the current time is 0, 1, 2, 3 or 4,
+ *     // then returns the seconds of the reached time.
+ *     wait({
+ *       while: () => new Date().getSeconds(),
+ *       whileResultExistsIn: [ 0, 1, 2, 3, 4 ]
+ *     });
+ *
+ *   If 'options.callback' is specified, it executes 'options.callback' function after waiting.
+ *
+ *     @example
+ *     // Waits for 5 seconds, then outputs a message to the console.
+ *     wait(5000, {
+ *       callback: () => console.log('5 seconds have passed.')
+ *     });
+ *
+ *     // Waits while the seconds of the current time become 0,
+ *     // then outputs a message to the console.
+ *     wait({
+ *       while: () => new Date().getSeconds() === 0,
+ *       callback: () => console.log('Time is up!')
+ *     });
+ *
+ *   If 'options.timeout' is specified, the waiting process will terminate after specified time.
+ *   If 'options.onTimeout' is specified, the specified function will be executed when a timeout occurs.
+ *
+ *     @example
+ *     // Waiting process will terminate after 3 seconds, then outputs a message to the console.
+ *     wait({
+ *       while: () => 1 < 2,
+ *       timeout: 3000,
+ *       onTimeout: () => console.log('Waiting process is terminated...')
+ *     });
+ *
+ *
+ * @param {number|Object} intervalOrOpts
+ *   - Wait time in milliseconds or options.
+ *     If NOT specified or FALSY value is specified, the default value of 100 is set as the 'wait time'.
+ *     If a JSON is specified and the second argument is NOT specified,
+ *     the first argument is treated as options, and the 'wait time' is set to 100 milliseconds.
+ *
+ * @param {Object} [options]
+ *   - Optional JSON data.
+ *
+ *   @param {function} [options.until]
+ *     - Condition check function for waiting until a specified condition is satisfied.
+ *
+ *       If 'options.untilResultExistsIn' is NOT specified:
+ *         Waits until 'options.until' function returns truthy value.
+ *
+ *       If 'options.untilResultExistsIn' is specified:
+ *         Waits until the result of 'options.until' function matches an element
+ *         in 'options.untilResultExistsIn' array.
+ *         The function returns the result of 'options.until' function.
+ *
+ *   @param {Array} [options.untilResultExistsIn]
+ *     - Result array for the until-wait condition function.
+ *
+ *   @param {function} [options.while]
+ *     - Condition check function for waiting while a specified condition is satisfied.
+ *
+ *       If 'options.whileResultExistsIn' is NOT specified:
+ *         Waits while 'options.while' function returns truthy value.
+ *
+ *       If 'options.whileResultExistsIn' is specified:
+ *         Waits while the result of 'options.while' function matches an element
+ *         in 'options.whileResultExistsIn' array.
+ *         The function returns the result of 'options.while' function.
+ *
+ *   @param {Array} [options.whileResultExistsIn]
+ *     - Result array for the while-wait condition function.
+ *
+ *   @param {function} [options.callback]
+ *     - Function to execute after waiting.
+ *
+ *   @param {number} [options.timeout]
+ *     - Timeout period in milliseconds.
+ *
+ *   @param {function} [options.onTimeout]
+ *     - Function to execute on timeout.
+ *
+ *   @param {function} [options.showDatetime]
+ *     - Whether to log the current datetime on function call (for debugging).
+ *
+ * @returns {*}
+ *   - If either 'options.untilResultExistsIn' or 'options.whileResultExistsIn' is specified,
+ *     returns the result of the specified function.
  */
 export async function wait(intervalOrOpts, options) {
 	// Determine the wait interval based on the argument.
