@@ -29,64 +29,109 @@
  *     await wait(1000);
  *
  *     // Waits for 100ms.
- *     await wait(null);
  *     await wait(0);
  *     await wait('');
+ *     await wait(null);
+ *     await wait(false);
+ *     await wait(undefined);
  *
  *   If ONLY first argument 'intervalOrOpts' is specified as a JSON,
- *   the first argument is treated as options, and the 'wait time' is set to 100 milliseconds.
+ *   the first argument is treated as options, and the default value of 100 is set as the 'wait time'.
  *
  *     @example
  *     // The first argument is treated as options.
  *     await wait({ until: () => ... });
  *
- *     // The above code is equivalent to the following code.
+ *     // The above code is equivalent to the following codes.
  *     await wait(100, { until: () => ... });
+ *     await wait(0, { until: () => ... });
+ *     await wait('', { until: () => ... });
+ *     await wait(null, { until: () => ... });
+ *     await wait(false, { until: () => ... });
+ *     await wait(undefined, { until: () => ... });
  *
  * 2. Options
- *   If 'options.until' is specified and 'options.untilResultExistsIn' is NOT specified,
- *   it waits until 'options.until' function returns truthy value.
+ *  (1) while-waiting
  *
- *     @example
- *     // Waits until the seconds of the current time reach 0.
- *     await wait({
- *       until: () => new Date().getSeconds() === 0
- *     });
- *
- *   If both 'options.until' and 'options.untilResultExistsIn' are specified,
- *   it waits until the result of 'options.until' function matches an element
- *   in 'options.untilResultExistsIn' array.
- *   The function returns the result of 'options.until' function.
- *
- *     @example
- *     // Waits until the seconds of the current time reach 0, 15, 30 or 45,
- *     // then returns the seconds of the reached time.
- *     await wait({
- *       until: () => new Date().getSeconds(),
- *       untilResultExistsIn: [ 0, 15, 30, 45 ]
- *     });
- *
- *   If 'options.while' is specified and 'options.whileResultExistsIn' is NOT specified,
+ *   If 'options.while' is specified and 'options.resultExistsIn' is NOT specified,
  *   it waits while 'options.while' function returns truthy value.
  *
  *     @example
  *     // Waits while the seconds of the current time is less than 30.
  *     await wait({
- *       while: () => new Date().getSeconds() < 30
+ *       while: function() {
+ *         return new Date().getSeconds() < 30;
+ *       }
  *     });
  *
- *   If both 'options.while' and 'options.whileResultExistsIn' are specified,
+ *     // Waits while the textbox is blank.
+ *     await wait({
+ *       while: () => document.querySelector('input[type="text"]').value === ''
+ *     });
+ *
+ *   If both 'options.while' and 'options.resultExistsIn' are specified,
  *   it waits while the result of 'options.while' function matches an element
- *   in 'options.whileResultExistsIn' array.
+ *   in 'options.resultExistsIn' array.
  *   The function returns the result of 'options.while' function.
  *
  *     @example
  *     // Waits while the seconds of the current time is 0, 1, 2, 3 or 4,
- *     // then returns the seconds of the reached time.
- *     await wait({
- *       while: () => new Date().getSeconds(),
- *       whileResultExistsIn: [ 0, 1, 2, 3, 4 ]
+ *     // then returns the seconds of the reached time (0, 1, 2, 3 or 4).
+ *     const secondsAfterWait = await wait({
+ *       while: function() {
+ *         return new Date().getSeconds();
+ *       },
+ *       resultExistsIn: [ 0, 1, 2, 3, 4 ]
  *     });
+ *
+ *     // Waits while the value of select box is 'April', 'May' or 'June',
+ *     // then returns the value when it becomes another month.
+ *     return await wait({
+ *       while: () => document.querySelector('select').value,
+ *       resultExistsIn: [ 'April', 'May', 'June' ]
+ *     });
+ *
+ *  (2) until-waiting
+ *
+ *   If 'options.until' is specified and 'options.resultExistsIn' is NOT specified,
+ *   it waits until 'options.until' function returns truthy value.
+ *
+ *     @example
+ *     // Waits until the seconds of the current time reach 0.
+ *     await wait({
+ *       until: function() {
+ *         return new Date().getSeconds() === 0;
+ *       }
+ *     });
+ *
+ *     // Waits until the checkbox is checked.
+ *     await wait({
+ *       until: () => document.querySelector('input[type="checkbox"]').checked
+ *     });
+ *
+ *   If both 'options.until' and 'options.resultExistsIn' are specified,
+ *   it waits until the result of 'options.until' function matches an element
+ *   in 'options.resultExistsIn' array.
+ *   The function returns the result of 'options.until' function.
+ *
+ *     @example
+ *     // Waits until the seconds of the current time reach 0, 15, 30 or 45,
+ *     // then returns the seconds of the reached time (0, 15, 30 or 45).
+ *     const secondsAfterWait = await wait({
+ *       until: function() {
+ *         return new Date().getSeconds();
+ *       },
+ *       resultExistsIn: [ 0, 15, 30, 45 ]
+ *     });
+ *
+ *     // Waits until the 'Sunday' or 'Saturday' radio button is selected,
+ *     // then returns the selected value when either is selected.
+ *     return await wait({
+ *       until: () => document.querySelectorAll('input[type="radio"]:checked').value,
+ *       resultExistsIn: [ 'Sunday', 'Saturday' ]
+ *     });
+ *
+ *  (3) callback
  *
  *   If 'options.callback' is specified, it executes 'options.callback' function after waiting.
  *
@@ -103,6 +148,8 @@
  *       callback: () => console.log('Time is up!')
  *     });
  *
+ *  (4) timeout
+ *
  *   If 'options.timeout' is specified, the waiting process will terminate after specified time.
  *   If 'options.onTimeout' is specified, the specified function will be executed when a timeout occurs.
  *
@@ -111,8 +158,12 @@
  *     await wait({
  *       while: () => 1 < 2,
  *       timeout: 3000,
- *       onTimeout: () => console.log('Waiting process is terminated...')
+ *       onTimeout: () => console.log('Waiting process terminated...')
  *     });
+ *
+ *  (5) debug
+ *
+ *   If 'options.showDatetime' is specified, the current datetime will be logged to the console at specified intervals.
  *
  *
  * @param {number|Object} intervalOrOpts
@@ -127,30 +178,27 @@
  *   @param {function} [options.until]
  *     - Condition check function for waiting until a specified condition is satisfied.
  *
- *       If 'options.untilResultExistsIn' is NOT specified:
+ *       If 'options.resultExistsIn' is NOT specified:
  *         Waits until 'options.until' function returns truthy value.
  *
- *       If 'options.untilResultExistsIn' is specified:
+ *       If 'options.resultExistsIn' is specified:
  *         Waits until the result of 'options.until' function matches an element
- *         in 'options.untilResultExistsIn' array.
+ *         in 'options.resultExistsIn' array.
  *         The function returns the result of 'options.until' function.
- *
- *   @param {Array} [options.untilResultExistsIn]
- *     - Result array for the until-wait condition function.
  *
  *   @param {function} [options.while]
  *     - Condition check function for waiting while a specified condition is satisfied.
  *
- *       If 'options.whileResultExistsIn' is NOT specified:
+ *       If 'options.resultExistsIn' is NOT specified:
  *         Waits while 'options.while' function returns truthy value.
  *
- *       If 'options.whileResultExistsIn' is specified:
+ *       If 'options.resultExistsIn' is specified:
  *         Waits while the result of 'options.while' function matches an element
- *         in 'options.whileResultExistsIn' array.
+ *         in 'options.resultExistsIn' array.
  *         The function returns the result of 'options.while' function.
  *
- *   @param {Array} [options.whileResultExistsIn]
- *     - Result array for the while-wait condition function.
+ *   @param {Array} [options.resultExistsIn]
+ *     - Array to store the value for determining whether to continue the waiting process or not.
  *
  *   @param {function} [options.callback]
  *     - Function to execute after waiting.
@@ -165,8 +213,7 @@
  *     - Whether to log the current datetime on function call (for debugging).
  *
  * @returns {*}
- *   - If either 'options.untilResultExistsIn' or 'options.whileResultExistsIn' is specified,
- *     returns the result of the specified function.
+ *   - If 'options.resultExistsIn' is specified, returns the result of the specified function.
  */
 export async function wait(intervalOrOpts, options) {
 	// Determine the wait interval based on the argument.
@@ -188,17 +235,17 @@ export async function wait(intervalOrOpts, options) {
 		 * Internal function to run the wait function based on provided conditions.
 		 *
 		 * @param {function} fn - Function to wait for.
-		 * @param {Array} criteria - Array of conditions for waiting.
 		 * @param {boolean} typeIsWhile - Flag indicating whether the type is 'while'.
 		 * @returns {*} - Result of the function or null on timeout.
 		 */
-		async function runWaitFunc(fn, criteria, typeIsWhile) {
-			const timeout = _opts.timeout;
-			const onTimeout = (_opts.onTimeout && (typeof _opts.onTimeout === 'function') ? _opts.onTimeout : null);
-
-			const startTime = Date.now();
+		async function runWaitFunc(fn, typeIsWhile) {
+			const criteria = _opts.resultExistsIn;
 
 			if (criteria) {
+				const timeout = _opts.timeout;
+				const onTimeout = (_opts.onTimeout && (typeof _opts.onTimeout === 'function') ? _opts.onTimeout : null);
+				const startTime = Date.now();
+
 				let result;
 
 				while (criteria.includes(result = await fn()) === typeIsWhile) {
@@ -222,10 +269,10 @@ export async function wait(intervalOrOpts, options) {
 		}
 
 		if (untilFunc) {
-			return runWaitFunc(untilFunc, _opts.untilResultExistsIn, false);
+			return runWaitFunc(untilFunc, false);
 		}
 		else if (whileFunc) {
-			return runWaitFunc(whileFunc, _opts.whileResultExistsIn, true);
+			return runWaitFunc(whileFunc, true);
 		}
 	} else {
 		// If neither untilFunc nor whileFunc is provided, simply wait for the specified interval.
@@ -269,7 +316,7 @@ function _isTimeout(startTime, timeout) {
  * 
  * @private
  * @param {number} interval - Time to wait in milliseconds.
- * @param {boolean} showDatetime - Whether to log the current datetime to the console when waiting starts.
+ * @param {boolean} showDatetime - Whether to log the current datetime to the console when the function called.
  * @returns {Promise} - Promise that resolves once the wait is completed.
  */
 function _wait(interval, showDatetime) {
