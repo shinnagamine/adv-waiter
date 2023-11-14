@@ -152,7 +152,7 @@
 		});
 		```
 
-		> [!NOTE]
+		> [!NOTE]  
 		> Without using ***AdvWaiter***, the code for the above process would be the complex code shown below:  
 
 		```
@@ -210,7 +210,7 @@
 		});
 		```
 
-		> [!NOTE]
+		> [!NOTE]  
 		> Without using ***AdvWaiter***, the code for the above process would be the complex code shown below:  
 
 		```
