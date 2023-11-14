@@ -18,7 +18,7 @@
  *
  *     @example
  *     // Waits for 100ms.
- *     wait();
+ *     await wait();
  *
  *   If ONLY first argument 'intervalOrOpts' is specified as a numeric value,
  *   it waits for the time specified in 'intervalOrOpts'.
