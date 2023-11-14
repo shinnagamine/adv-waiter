@@ -96,10 +96,10 @@
  *       callback: () => console.log('5 seconds have passed.')
  *     });
  *
- *     // Waits while the seconds of the current time become 0,
+ *     // Waits until the seconds of the current time become 0,
  *     // then outputs a message to the console.
  *     wait({
- *       while: () => new Date().getSeconds() === 0,
+ *       until: () => new Date().getSeconds() === 0,
  *       callback: () => console.log('Time is up!')
  *     });
  *
