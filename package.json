@@ -1,0 +1,30 @@
+{
+  "name": "adv-waiter",
+  "version": "1.1.0",
+  "description": "**AdvWaiter** is a JavaScript library/module that provides a couple of wait functions to simplify the source code and make it more readable.",
+  "main": "adv-waiter.js",
+  "scripts": {
+    "build-dev": "vite",
+    "build-dev-watch": "vite --watch",
+    "build-prod": "vite build",
+    "build-prod-watch": "vite build --watch",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinnagamine/adv-waiter.git"
+  },
+  "keywords": [
+    "javascript",
+    "wait"
+  ],
+  "author": "Shin Nagamine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shinnagamine/adv-waiter/issues"
+  },
+  "homepage": "https://github.com/shinnagamine/adv-waiter#readme",
+  "devDependencies": {
+    "vite": "^4.5.0"
+  }
+}
