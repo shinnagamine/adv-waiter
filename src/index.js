@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.3
+ * @version     : 1.1.4
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -223,14 +223,14 @@ export async function wait(intervalOrOpts, options) {
 	const _opts = options || (intervalOrOpts && typeof intervalOrOpts === 'object' ? intervalOrOpts : {});
 
 	// Extract relevant functions from options, defaulting to null if not provided or not a function.
-	const untilFunc = (_opts.until && (typeof _opts.until === 'function') ? _opts.until : null);
 	const whileFunc = (_opts.while && (typeof _opts.while === 'function') ? _opts.while : null);
+	const untilFunc = (_opts.until && (typeof _opts.until === 'function') ? _opts.until : null);
 	const callbackFunc = (_opts.callback && (typeof _opts.callback === 'function') ? _opts.callback : null);
 
 	// Flag to determine whether to log the current datetime for debugging.
 	const showDatetime = _opts.showDatetime;
 
-	if (untilFunc || whileFunc) {
+	if (whileFunc || untilFunc) {
 		/**
 		 * Internal function to run the wait function based on provided conditions.
 		 *
@@ -268,11 +268,10 @@ export async function wait(intervalOrOpts, options) {
 			}
 		}
 
-		if (untilFunc) {
-			return runWaitFunc(untilFunc, false);
-		}
-		else if (whileFunc) {
+		if (whileFunc) {
 			return runWaitFunc(whileFunc, true);
+		} else {
+			return runWaitFunc(untilFunc, false);
 		}
 	} else {
 		// If neither untilFunc nor whileFunc is provided, simply wait for the specified interval.
