@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.0
+ * @version     : 1.1.2
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -25,7 +25,7 @@
  *   [Note] If a FALSY value is specified, the default value of 100 is set as the 'wait time'.
  *
  *     @example
- *     // Waits for 1000ms.
+ *     // Waits for 1 second.
  *     await wait(1000);
  *
  *     // Waits for 100ms.
@@ -156,7 +156,7 @@
  *     @example
  *     // Waiting process will terminate after 3 seconds, then outputs a message to the console.
  *     await wait({
- *       while: () => 1 < 2,
+ *       while: () => true,
  *       timeout: 3000,
  *       onTimeout: () => console.log('Waiting process terminated...')
  *     });
@@ -227,7 +227,7 @@ export async function wait(intervalOrOpts, options) {
 	const whileFunc = (_opts.while && (typeof _opts.while === 'function') ? _opts.while : null);
 	const callbackFunc = (_opts.callback && (typeof _opts.callback === 'function') ? _opts.callback : null);
 
-    // Flag to determine whether to log the current datetime for debugging.
+	// Flag to determine whether to log the current datetime for debugging.
 	const showDatetime = _opts.showDatetime;
 
 	if (untilFunc || whileFunc) {
