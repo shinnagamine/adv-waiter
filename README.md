@@ -14,7 +14,7 @@
 			(5) [debug](#5-debug)  
 
 ## 1. Overview
-***AdvWaiter*** is a JavaScript library/module that provides a couple of wait functions to simplify the source code and make it more readable.
+***AdvWaiter*** is a JavaScript library/module that provides a couple of ***wait*** functions to simplify the source code and make it more readable.
 
 ## 2. How to use ***AdvWaiter***
 + ### Direct script loading (CDN)
@@ -81,7 +81,7 @@
 	If a **FALSY** value is specified, the default value of 100 is set as the 'wait time'.  
 
 	```
-	// Waits for 1000ms.
+	// Waits for 1 second.
 	await wait(1000);
 
 	// Waits for 100ms.
@@ -113,7 +113,7 @@
 	+ ### (1) while-waiting  
 
 		If `options.while` is specified and `options.resultExistsIn` is **NOT** specified,
-		it waits while `options.while` function returns truthy value.  
+		it waits **WHILE** `options.while` function returns truthy value.  
 
 		```
 		// Waits while the seconds of the current time is less than 30.
@@ -130,7 +130,7 @@
 		```
 
 		If both `options.while` and `options.resultExistsIn` are specified,
-		it waits while the result of `options.while` function matches an element
+		it waits **WHILE** the result of `options.while` function matches an element
 		in `options.resultExistsIn` array.  
 		The function returns the result of `options.while` function.  
 
@@ -171,7 +171,7 @@
 	+ ### (2) until-waiting  
 
 		If `options.until` is specified and `options.resultExistsIn` is **NOT** specified,
-		it waits until `options.until` function returns truthy value.  
+		it waits **UNTIL** `options.until` function returns truthy value.  
 
 		```
 		// Waits until the seconds of the current time reach 0.
@@ -188,7 +188,7 @@
 		```
 
 		If both `options.until` and `options.resultExistsIn` are specified,
-		it waits until the result of `options.until` function matches an element
+		it waits **UNTIL** the result of `options.until` function matches an element
 		in `options.resultExistsIn` array.  
 		The function returns the result of `options.until` function.  
 
@@ -251,7 +251,7 @@
 		```
 		// Waiting process will terminate after 3 seconds, then outputs a message to the console.
 		await wait({
-		  while: () => 1 < 2,
+		  while: () => true,
 		  timeout: 3000,
 		  onTimeout: () => console.log('Waiting process terminated...')
 		});
