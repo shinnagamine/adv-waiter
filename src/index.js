@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.2
+ * @version     : 1.1.3
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -175,27 +175,27 @@
  * @param {Object} [options]
  *   - Optional JSON data.
  *
- *   @param {function} [options.until]
- *     - Condition check function for waiting until a specified condition is satisfied.
- *
- *       If 'options.resultExistsIn' is NOT specified:
- *         Waits until 'options.until' function returns truthy value.
- *
- *       If 'options.resultExistsIn' is specified:
- *         Waits until the result of 'options.until' function matches an element
- *         in 'options.resultExistsIn' array.
- *         The function returns the result of 'options.until' function.
- *
  *   @param {function} [options.while]
- *     - Condition check function for waiting while a specified condition is satisfied.
+ *     - Condition check function for waiting WHILE a specified condition is satisfied.
  *
  *       If 'options.resultExistsIn' is NOT specified:
- *         Waits while 'options.while' function returns truthy value.
+ *         Waits WHILE 'options.while' function returns truthy value.
  *
  *       If 'options.resultExistsIn' is specified:
- *         Waits while the result of 'options.while' function matches an element
+ *         Waits WHILE the result of 'options.while' function matches an element
  *         in 'options.resultExistsIn' array.
  *         The function returns the result of 'options.while' function.
+ *
+ *   @param {function} [options.until]
+ *     - Condition check function for waiting UNTIL a specified condition is satisfied.
+ *
+ *       If 'options.resultExistsIn' is NOT specified:
+ *         Waits UNTIL 'options.until' function returns truthy value.
+ *
+ *       If 'options.resultExistsIn' is specified:
+ *         Waits UNTIL the result of 'options.until' function matches an element
+ *         in 'options.resultExistsIn' array.
+ *         The function returns the result of 'options.until' function.
  *
  *   @param {Array} [options.resultExistsIn]
  *     - Array to store the value for determining whether to continue the waiting process or not.
