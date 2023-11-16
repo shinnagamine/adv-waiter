@@ -1,4 +1,5 @@
 # AdvWaiter: Advanced wait functions library/module
+
 1. [Overview](#1-overview)  
 2. [How to use AdvWaiter](#2-how-to-use-advwaiter)  
 	+ [Direct script loading (CDN)](#direct-script-loading-cdn)  
@@ -14,7 +15,9 @@
 			(5) [debug](#5-debug)  
 
 ## 1. Overview
-***AdvWaiter*** is a JavaScript library/module that provides a couple of ***wait*** functions to simplify the source code and make it more readable.
+***AdvWaiter*** is a JavaScript library/module that provides a couple of ***wait*** functions to simplify the source code and make it more readable.  
+
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=flat&logo=javascript&logoColor=white&color=blue)
 
 ## 2. How to use ***AdvWaiter***
 + ### Direct script loading (CDN)
