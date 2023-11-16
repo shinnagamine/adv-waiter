@@ -115,6 +115,8 @@
 
 	+ ### (1) while-waiting  
 
+		<img src="https://github.com/shinnagamine/adv-waiter/blob/main/images/while-waiting_1.png" width="600">
+
 		If `options.while` is specified and `options.resultExistsIn` is **NOT** specified,
 		it waits **WHILE** `options.while` function returns truthy value.  
 
@@ -131,6 +133,8 @@
 		  while: () => document.querySelector('input[type="text"]').value === ''
 		});
 		```
+
+		<img src="https://github.com/shinnagamine/adv-waiter/blob/main/images/while-waiting_2.png" width="600">
 
 		If both `options.while` and `options.resultExistsIn` are specified,
 		it waits **WHILE** the result of `options.while` function matches an element
@@ -173,6 +177,8 @@
 
 	+ ### (2) until-waiting  
 
+		<img src="https://github.com/shinnagamine/adv-waiter/blob/main/images/until-waiting_1.png" width="600">
+
 		If `options.until` is specified and `options.resultExistsIn` is **NOT** specified,
 		it waits **UNTIL** `options.until` function returns truthy value.  
 
@@ -189,6 +195,8 @@
 		  until: () => document.querySelector('input[type="checkbox"]').checked
 		});
 		```
+
+		<img src="https://github.com/shinnagamine/adv-waiter/blob/main/images/until-waiting_2.png" width="600">
 
 		If both `options.until` and `options.resultExistsIn` are specified,
 		it waits **UNTIL** the result of `options.until` function matches an element
