@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.4
+ * @version     : 1.1.5
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -230,6 +230,8 @@ export async function wait(intervalOrOpts, options) {
 	// Flag to determine whether to log the current datetime for debugging.
 	const showDatetime = _opts.showDatetime;
 
+	let result = null;
+
 	if (whileFunc || untilFunc) {
 		/**
 		 * Internal function to run the wait function based on provided conditions.
@@ -269,9 +271,9 @@ export async function wait(intervalOrOpts, options) {
 		}
 
 		if (whileFunc) {
-			return runWaitFunc(whileFunc, true);
-		} else {
-			return runWaitFunc(untilFunc, false);
+			result = await runWaitFunc(whileFunc, true);
+		} else if (untilFunc) {
+			result = await runWaitFunc(untilFunc, false);
 		}
 	} else {
 		// If neither untilFunc nor whileFunc is provided, simply wait for the specified interval.
@@ -282,6 +284,8 @@ export async function wait(intervalOrOpts, options) {
 		// If callbackFunc is provided, execute it after the wait.
 		callbackFunc();
 	}
+
+	return result;
 }
 
 
