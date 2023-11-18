@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.6
+ * @version     : 1.1.8
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -51,119 +51,150 @@
  *     await wait(undefined, { until: () => ... });
  *
  * 2. Options
- *  (1) while-waiting
+ *   (1) callback
  *
- *   If 'options.while' is specified and 'options.resultExistsIn' is NOT specified,
- *   it waits while 'options.while' function returns truthy value.
+ *     If 'options.callback' is specified, it executes 'options.callback' function after waiting.
  *
- *     @example
- *     // Waits while the seconds of the current time is less than 30.
- *     await wait({
- *       while: function() {
- *         return new Date().getSeconds() < 30;
- *       }
- *     });
+ *       @example
+ *       // Waits for 5 seconds, then outputs a message to the console.
+ *       await wait(5000, {
+ *         callback: () => console.log('5 seconds have passed.')
+ *       });
  *
- *     // Waits while the textbox is blank.
- *     await wait({
- *       while: () => document.querySelector('input[type="text"]').value === ''
- *     });
+ *   (2) while-waiting
  *
- *   If both 'options.while' and 'options.resultExistsIn' are specified,
- *   it waits while the result of 'options.while' function matches an element
- *   in 'options.resultExistsIn' array.
- *   The function returns the result of 'options.while' function.
+ *     a. In case of only 'while' being specfied
+ *       If 'options.while' is specified and 'options.existsIn' is NOT specified,
+ *       it waits WHILE 'options.while' function returns truthy value.
  *
- *     @example
- *     // Waits while the seconds of the current time is 0, 1, 2, 3 or 4,
- *     // then returns the seconds of the reached time (0, 1, 2, 3 or 4).
- *     const secondsAfterWait = await wait({
- *       while: function() {
- *         return new Date().getSeconds();
- *       },
- *       resultExistsIn: [ 0, 1, 2, 3, 4 ]
- *     });
+ *         @example
+ *         // Waits while the seconds of the current time is less than 30.
+ *         await wait({
+ *           while: () => new Date().getSeconds() < 30
+ *         });
  *
- *     // Waits while the value of select box is 'April', 'May' or 'June',
- *     // then returns the value when it becomes another month.
- *     return await wait({
- *       while: () => document.querySelector('select').value,
- *       resultExistsIn: [ 'April', 'May', 'June' ]
- *     });
+ *         // Waits while the textbox is blank.
+ *         await wait({
+ *           while: () => document.querySelector('input[type="text"]').value === ''
+ *         });
  *
- *  (2) until-waiting
+ *         // Waits while the element exists.
+ *         // * i.e., while document.querySelector() returns truthy value.
+ *         await wait({
+ *           while: () => document.querySelector('#will_be_removed')
+ *         });
  *
- *   If 'options.until' is specified and 'options.resultExistsIn' is NOT specified,
- *   it waits until 'options.until' function returns truthy value.
+ *     b. In case of both 'while' and 'existsIn' being specfied
+ *       If both 'options.while' and 'options.existsIn' are specified:
+ *         The function returns the result of 'options.while' function.
  *
- *     @example
- *     // Waits until the seconds of the current time reach 0.
- *     await wait({
- *       until: function() {
- *         return new Date().getSeconds() === 0;
- *       }
- *     });
+ *         - If the type of 'options.existsIn' is Array:
+ *           It waits WHILE the result of 'options.while' function matches an element
+ *           in 'options.existsIn' array.
  *
- *     // Waits until the checkbox is checked.
- *     await wait({
- *       until: () => document.querySelector('input[type="checkbox"]').checked
- *     });
+ *         - If the type of 'options.existsIn' is other than Array and the value is truthy:
+ *           It waits WHILE the result of 'options.while' function is equivalent
+ *           to the value of 'options.existsIn'.
  *
- *   If both 'options.until' and 'options.resultExistsIn' are specified,
- *   it waits until the result of 'options.until' function matches an element
- *   in 'options.resultExistsIn' array.
- *   The function returns the result of 'options.until' function.
+ *         - If the type of 'options.existsIn' is other than Array and the value is falsy:
+ *           The 'options.existsIn' is ignored.
+ *           If you want to use a falsy value for the wait condition,
+ *           it must be specified as an element within the array.
  *
- *     @example
- *     // Waits until the seconds of the current time reach 0, 15, 30 or 45,
- *     // then returns the seconds of the reached time (0, 15, 30 or 45).
- *     const secondsAfterWait = await wait({
- *       until: function() {
- *         return new Date().getSeconds();
- *       },
- *       resultExistsIn: [ 0, 15, 30, 45 ]
- *     });
+ *         @example
+ *         // Waits while the seconds of the current time is 0, 1, 2, 3 or 4,
+ *         // then returns the seconds of the reached time (other than 0, 1, 2, 3 and 4).
+ *         const secondsAfterWait = await wait({
+ *           while: () => new Date().getSeconds(),
+ *           existsIn: [ 0, 1, 2, 3, 4 ]
+ *         });
  *
- *     // Waits until the 'Sunday' or 'Saturday' radio button is selected,
- *     // then returns the selected value when either is selected.
- *     return await wait({
- *       until: () => document.querySelectorAll('input[type="radio"]:checked').value,
- *       resultExistsIn: [ 'Sunday', 'Saturday' ]
- *     });
+ *         // Waits while the value of select box is 'April', 'May' or 'June',
+ *         // then returns the value when it becomes another month.
+ *         return await wait({
+ *           while: () => document.querySelector('select').value,
+ *           existsIn: [ 'April', 'May', 'June' ]
+ *         });
  *
- *  (3) callback
+ *   (3) until-waiting
  *
- *   If 'options.callback' is specified, it executes 'options.callback' function after waiting.
+ *     a. In case of only 'until' being specfied
+ *       If 'options.until' is specified and 'options.existsIn' is NOT specified,
+ *       it waits until 'options.until' function returns truthy value.
  *
- *     @example
- *     // Waits for 5 seconds, then outputs a message to the console.
- *     await wait(5000, {
- *       callback: () => console.log('5 seconds have passed.')
- *     });
+ *         @example
+ *         // Waits until the seconds of the current time reach 0.
+ *         await wait({
+ *           until: () => new Date().getSeconds() === 0
+ *         });
  *
- *     // Waits until the seconds of the current time become 0,
- *     // then outputs a message to the console.
- *     await wait({
- *       until: () => new Date().getSeconds() === 0,
- *       callback: () => console.log('Time is up!')
- *     });
+ *         // Waits until the checkbox is checked.
+ *         await wait({
+ *           until: () => document.querySelector('input[type="checkbox"]').checked
+ *         });
  *
- *  (4) timeout
+ *         // Waits until the element is created.
+ *         // * i.e., until document.querySelector() returns truthy value.
+ *         await wait({
+ *           until: () => document.querySelector('#will_be_created')
+ *         });
  *
- *   If 'options.timeout' is specified, the waiting process will terminate after specified time.
- *   If 'options.onTimeout' is specified, the specified function will be executed when a timeout occurs.
+ *     b. In case of both 'until' and 'existsIn' being specfied
+ *       If both 'options.until' and 'options.existsIn' are specified:
+ *         The function returns the result of 'options.until' function.
  *
- *     @example
- *     // Waiting process will terminate after 3 seconds, then outputs a message to the console.
- *     await wait({
- *       while: () => true,
- *       timeout: 3000,
- *       onTimeout: () => console.log('Waiting process terminated...')
- *     });
+ *         - If the type of 'options.existsIn' is Array:
+ *           It waits UNTIL the result of 'options.until' function matches an element
+ *           in 'options.existsIn' array.
  *
- *  (5) onWaiting
+ *         - If the type of 'options.existsIn' is other than Array and the value is truthy:
+ *           It waits UNTIL the result of 'options.until' function is equivalent
+ *           to the value of 'options.existsIn'.
  *
- *   If 'options.onWaiting' is specified, the specified function will be executed at specified intervals while waiting.
+ *         - If the type of 'options.existsIn' is other than Array and the value is falsy:
+ *           The 'options.existsIn' is ignored.
+ *           If you want to use a falsy value for the wait condition,
+ *           it must be specified as an element within the array.
+ *
+ *         @example
+ *         // Waits until the seconds of the current time reach 0, 15, 30 or 45,
+ *         // then returns the seconds of the reached time (0, 15, 30 or 45).
+ *         const secondsAfterWait = await wait({
+ *           until: () => new Date().getSeconds(),
+ *           existsIn: [ 0, 15, 30, 45 ]
+ *         });
+ *
+ *         // Waits until the 'Sunday' or 'Saturday' radio button is selected,
+ *         // then returns the selected value when either is selected.
+ *         return await wait({
+ *           until: () => document.querySelectorAll('input[type="radio"]:checked').value,
+ *           existsIn: [ 'Sunday', 'Saturday' ]
+ *         });
+ *
+ *   (4) timeout
+ *
+ *       If 'options.timeout' is specified, the waiting process will terminate after specified time.
+ *       If 'options.onTimeout' is specified, the specified function will be executed when a timeout occurs.
+ *
+ *         @example
+ *         // Waiting process will terminate after 3 seconds, then outputs a message to the console.
+ *         await wait({
+ *           while: () => true,
+ *           timeout: 3000,
+ *           onTimeout: () => console.log('Waiting process terminated...')
+ *         });
+ *
+ *   (5) onWaiting
+ *
+ *       If 'options.onWaiting' is specified, the specified function will be executed at specified intervals while waiting.
+ *       This option may be used primarily for debugging purposes.
+ *
+ *         @example
+ *         // Outputs the current time to the console while waiting.
+ *         await wait({
+ *           while: () => true,
+ *           onWaiting: () => console.log(new Date())
+ *         });
  *
  *
  * @param {number|Object} intervalOrOpts
@@ -177,27 +208,37 @@
  *
  *   @param {function} [options.while]
  *     - Condition check function for waiting WHILE a specified condition is satisfied.
+ *       The function returns the result of 'options.while' function.
  *
- *       If 'options.resultExistsIn' is NOT specified:
+ *       If 'options.existsIn' is NOT specified:
  *         Waits WHILE 'options.while' function returns truthy value.
  *
- *       If 'options.resultExistsIn' is specified:
- *         Waits WHILE the result of 'options.while' function matches an element
- *         in 'options.resultExistsIn' array.
- *         The function returns the result of 'options.while' function.
+ *       If 'options.existsIn' is specified:
+ *         - If the type of 'options.existsIn' is Array:
+ *           Waits WHILE the result of 'options.while' function matches an element
+ *           in 'options.existsIn' array.
+ *
+ *         - If the type of 'options.existsIn' is other than Array and the value is truthy:
+ *           Waits WHILE the result of 'options.while' function is equivalent
+ *           to the value of 'options.existsIn'
  *
  *   @param {function} [options.until]
  *     - Condition check function for waiting UNTIL a specified condition is satisfied.
+ *       The function returns the result of 'options.until' function.
  *
- *       If 'options.resultExistsIn' is NOT specified:
+ *       If 'options.existsIn' is NOT specified:
  *         Waits UNTIL 'options.until' function returns truthy value.
  *
- *       If 'options.resultExistsIn' is specified:
- *         Waits UNTIL the result of 'options.until' function matches an element
- *         in 'options.resultExistsIn' array.
- *         The function returns the result of 'options.until' function.
+ *       If 'options.existsIn' is specified:
+ *         - If the type of 'options.existsIn' is Array:
+ *           Waits UNTIL the result of 'options.until' function matches an element
+ *           in 'options.existsIn' array.
  *
- *   @param {Array} [options.resultExistsIn]
+ *         - If the type of 'options.existsIn' is other than Array and the value is truthy:
+ *           Waits UNTIL the result of 'options.until' function is equivalent
+ *           to the value of 'options.existsIn'
+ *
+ *   @param {Array} [options.existsIn]
  *     - Array to store the value for determining whether to continue the waiting process or not.
  *
  *   @param {function} [options.callback]
@@ -213,7 +254,9 @@
  *     - Function to execute at specified intervals while waiting.
  *
  * @returns {*}
- *   - If 'options.resultExistsIn' is specified, returns the result of the specified function.
+ *   - If 'options.existsIn' is NOT specified, returns true.
+ *     If 'options.existsIn' is specified, returns the result of the specified function.
+ *     If timeout, returns false.
  */
 async function wait(intervalOrOpts, options) {
 	// Determine the wait interval based on the argument.
@@ -236,42 +279,47 @@ async function wait(intervalOrOpts, options) {
 		 *
 		 * @param {function} fn - Function to wait for.
 		 * @param {boolean} typeIsWhile - Flag indicating whether the type is 'while'.
-		 * @returns {*} - Result of the function or null on timeout.
+		 * @returns {*} - Result of the function or false on timeout.
 		 */
 		async function runWaitFunc(fn, typeIsWhile) {
-			const criteria = _opts.resultExistsIn;
+			let _result;
 
-			if (criteria) {
-				const timeout = _opts.timeout;
-				const onTimeout = (_opts.onTimeout && (typeof _opts.onTimeout === 'function') ? _opts.onTimeout : null);
-				const startTime = Date.now();
+			const checkCondition = async () => {
+				_result = await fn();
 
-				let result;
+				const criteria = (() => {
+					const existsIn = _opts.existsIn;
 
-				while (criteria.includes(result = await fn()) === typeIsWhile) {
-					// Check for timeout and execute onTimeout if specified.
-					if (_isTimeout(startTime, timeout)) {
-						if (onTimeout) {
-							onTimeout();
+					if (existsIn) {
+						if (Array.isArray(existsIn)) {
+							return existsIn.includes(_result);
+						} else {
+							return (existsIn === _result);
 						}
-						return null;
+					} else {
+						return !!_result;
 					}
+				})();
 
-					await _wait(_interval, onWaitingFunc);
-				}
-				return result;
-			}
-			else {
-				if (typeIsWhile) {
-					while (await fn()) {
-						await _wait(_interval, onWaitingFunc);
+				return criteria === typeIsWhile;
+			};
+
+			const onTimeout = (_opts.onTimeout && (typeof _opts.onTimeout === 'function') ? _opts.onTimeout : null);
+			const startTime = Date.now();
+
+			while (await checkCondition()) {
+				// Check for timeout and execute onTimeout if specified.
+				if (_isTimeout(startTime, _opts.timeout)) {
+					if (onTimeout) {
+						onTimeout();
 					}
-				} else {
-					while (!(await fn())) {
-						await _wait(_interval, onWaitingFunc);
-					}
+					return false;
 				}
+
+				await _wait(_interval, onWaitingFunc);
 			}
+
+			return _result;
 		}
 
 		if (whileFunc) {
@@ -282,9 +330,10 @@ async function wait(intervalOrOpts, options) {
 	} else {
 		// If neither untilFunc nor whileFunc is provided, simply wait for the specified interval.
 		await _wait(_interval, onWaitingFunc);
+		result = true;
 	}
 
-	if (callbackFunc && typeof callbackFunc === 'function') {
+	if (callbackFunc) {
 		// If callbackFunc is provided, execute it after the wait.
 		callbackFunc();
 	}
