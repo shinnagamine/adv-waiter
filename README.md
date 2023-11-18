@@ -12,12 +12,13 @@
 			(2) [until-waiting](#2-until-waiting)  
 			(3) [callback](#3-callback)  
 			(4) [timeout](#4-timeout)  
-			(5) [debug](#5-debug)  
+			(5) [onWaiting](#5-onwaiting)  
 
 ## 1. Overview
 ***AdvWaiter*** is a JavaScript library/module that provides a couple of ***wait*** functions to simplify the source code and make it more readable.  
 
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=flat&logo=javascript&logoColor=white&color=blue)
+![MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat)  
 
 ## 2. How to use ***AdvWaiter***
 + ### Direct script loading (CDN)
@@ -268,9 +269,9 @@
 		});
 		```
 
-	+ ### (5) debug  
+	+ ### (5) onWaiting  
 
-		If `options.showDatetime` is specified, the current datetime will be logged to the console at specified intervals.
+		If `options.onWaiting` is specified, the specified function will be executed at specified intervals while waiting.
 
 ## License
 ***AdvWaiter*** is licensed under [MIT](https://github.com/shinnagamine/adv-waiter/blob/main/LICENSE).
