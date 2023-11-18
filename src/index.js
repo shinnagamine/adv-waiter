@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.5
+ * @version     : 1.1.6
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -161,9 +161,9 @@
  *       onTimeout: () => console.log('Waiting process terminated...')
  *     });
  *
- *  (5) debug
+ *  (5) onWaiting
  *
- *   If 'options.showDatetime' is specified, the current datetime will be logged to the console at specified intervals.
+ *   If 'options.onWaiting' is specified, the specified function will be executed at specified intervals while waiting.
  *
  *
  * @param {number|Object} intervalOrOpts
@@ -209,13 +209,13 @@
  *   @param {function} [options.onTimeout]
  *     - Function to execute on timeout.
  *
- *   @param {function} [options.showDatetime]
- *     - Whether to log the current datetime on function call (for debugging).
+ *   @param {function} [options.onWaiting]
+ *     - Function to execute at specified intervals while waiting.
  *
  * @returns {*}
  *   - If 'options.resultExistsIn' is specified, returns the result of the specified function.
  */
-export async function wait(intervalOrOpts, options) {
+async function wait(intervalOrOpts, options) {
 	// Determine the wait interval based on the argument.
 	const _interval = (intervalOrOpts && isFinite(intervalOrOpts)) ? intervalOrOpts : 100;
 
@@ -226,9 +226,7 @@ export async function wait(intervalOrOpts, options) {
 	const whileFunc = (_opts.while && (typeof _opts.while === 'function') ? _opts.while : null);
 	const untilFunc = (_opts.until && (typeof _opts.until === 'function') ? _opts.until : null);
 	const callbackFunc = (_opts.callback && (typeof _opts.callback === 'function') ? _opts.callback : null);
-
-	// Flag to determine whether to log the current datetime for debugging.
-	const showDatetime = _opts.showDatetime;
+	const onWaitingFunc = (_opts.onWaiting && (typeof _opts.onWaiting === 'function') ? _opts.onWaiting : null);
 
 	let result = null;
 
@@ -259,13 +257,19 @@ export async function wait(intervalOrOpts, options) {
 						return null;
 					}
 
-					await _wait(_interval, showDatetime);
+					await _wait(_interval, onWaitingFunc);
 				}
 				return result;
 			}
 			else {
-				while ((await fn()) === typeIsWhile) {
-					await _wait(_interval, showDatetime);
+				if (typeIsWhile) {
+					while (await fn()) {
+						await _wait(_interval, onWaitingFunc);
+					}
+				} else {
+					while (!(await fn())) {
+						await _wait(_interval, onWaitingFunc);
+					}
 				}
 			}
 		}
@@ -277,7 +281,7 @@ export async function wait(intervalOrOpts, options) {
 		}
 	} else {
 		// If neither untilFunc nor whileFunc is provided, simply wait for the specified interval.
-		await _wait(_interval, showDatetime);
+		await _wait(_interval, onWaitingFunc);
 	}
 
 	if (callbackFunc && typeof callbackFunc === 'function') {
@@ -288,12 +292,13 @@ export async function wait(intervalOrOpts, options) {
 	return result;
 }
 
-
+/**
+ * Module definition and export
+ */
 const AdvWaiter = {
 	wait
 };
 export default AdvWaiter;
-window.AdvWaiter = AdvWaiter;
 
 
 /**
@@ -319,12 +324,12 @@ function _isTimeout(startTime, timeout) {
  * 
  * @private
  * @param {number} interval - Time to wait in milliseconds.
- * @param {boolean} showDatetime - Whether to log the current datetime to the console when the function called.
+ * @param {function} onWaitingFunc - Function to execute when '_wait()' called.
  * @returns {Promise} - Promise that resolves once the wait is completed.
  */
-function _wait(interval, showDatetime) {
-	if (showDatetime) {
-		console.log(new Date());
+function _wait(interval, onWaitingFunc) {
+	if (onWaitingFunc) {
+		onWaitingFunc();
 	}
 
 	return new Promise(resolve => {
