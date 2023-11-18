@@ -163,16 +163,16 @@
 		If both `options.while` and `options.existsIn` are specified:  
 		The function returns the result of `options.while` function.  
 
-		- If the type of 'options.existsIn' is Array:  
+		- If the type of `options.existsIn` is Array:  
 		  It waits **WHILE** the result of `options.while` function matches an element
 		  in `options.existsIn` array.  
 
-		- If the type of 'options.existsIn' is other than Array and the value is truthy:  
-		  It waits **WHILE** the result of 'options.while' function is equivalent
-		  to the value of 'options.existsIn'.  
+		- If the type of `options.existsIn` is other than Array and the value is **TRUTHY**:  
+		  It waits **WHILE** the result of `options.while` function is equivalent
+		  to the value of `options.existsIn`.  
 
-		- If the type of 'options.existsIn' is other than Array and the value is falsy:  
-		  The 'options.existsIn' is ignored.  
+		- If the type of `options.existsIn` is other than Array and the value is **FALSY**:  
+		  The `options.existsIn` is **IGNORED**.  
 		  If you want to use a falsy value for the wait condition,
 		  it must be specified as an element within the array.
 
@@ -253,16 +253,16 @@
 	If both `options.until` and `options.existsIn` are specified:  
 	The function returns the result of `options.until` function.  
 
-	- If the type of 'options.existsIn' is Array:
+	- If the type of `options.existsIn` is Array:  
 	  It waits **UNTIL** the result of `options.until` function matches an element
 	  in `options.existsIn` array.  
 
-	- If the type of 'options.existsIn' is other than Array and the value is truthy:
-	  It waits **UNTIL** the result of 'options.until' function is equivalent
-	  to the value of 'options.existsIn'.  
+	- If the type of `options.existsIn` is other than Array and the value is **TRUTHY**:  
+	  It waits **UNTIL** the result of `options.until` function is equivalent
+	  to the value of `options.existsIn`.  
 
-	- If the type of 'options.existsIn' is other than Array and the value is falsy:  
-	  The 'options.existsIn' is ignored.  
+	- If the type of `options.existsIn` is other than Array and the value is **FALSY**:  
+	  The `options.existsIn` is **IGNORED**.  
 	  If you want to use a falsy value for the wait condition,
 	  it must be specified as an element within the array.
 
@@ -328,7 +328,7 @@
 
 	### (5) onWaiting  
 
-	If `options.onWaiting` is specified, the specified function will be executed at specified intervals while waiting.
+	If `options.onWaiting` is specified, the specified function will be executed at specified intervals while waiting.  
 	This option may be used primarily for debugging purposes.  
 
 	```
