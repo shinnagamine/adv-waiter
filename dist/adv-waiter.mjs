@@ -4,51 +4,46 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.6
+ * @version     : 1.1.8
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
  */
-async function F(n, i) {
-  const e = n && isFinite(n) ? n : 100, t = i || (n && typeof n == "object" ? n : {}), l = t.while && typeof t.while == "function" ? t.while : null, a = t.until && typeof t.until == "function" ? t.until : null, c = t.callback && typeof t.callback == "function" ? t.callback : null, o = t.onWaiting && typeof t.onWaiting == "function" ? t.onWaiting : null;
-  let f = null;
-  if (l || a) {
-    async function w(s, r) {
-      const m = t.resultExistsIn;
-      if (m) {
-        const h = t.timeout, y = t.onTimeout && typeof t.onTimeout == "function" ? t.onTimeout : null, b = Date.now();
-        let T;
-        for (; m.includes(T = await s()) === r; ) {
-          if (k(b, h))
-            return y && y(), null;
-          await u(e, o);
-        }
-        return T;
-      } else if (r)
-        for (; await s(); )
-          await u(e, o);
-      else
-        for (; !await s(); )
-          await u(e, o);
+async function k(t, i) {
+  const o = t && isFinite(t) ? t : 100, n = i || (t && typeof t == "object" ? t : {}), a = n.while && typeof n.while == "function" ? n.while : null, l = n.until && typeof n.until == "function" ? n.until : null, s = n.callback && typeof n.callback == "function" ? n.callback : null, f = n.onWaiting && typeof n.onWaiting == "function" ? n.onWaiting : null;
+  let u = null;
+  if (a || l) {
+    async function r(m, T) {
+      let e;
+      const h = async () => (e = await m(), (() => {
+        const c = n.existsIn;
+        return c ? Array.isArray(c) ? c.includes(e) : c === e : !!e;
+      })() === T), w = n.onTimeout && typeof n.onTimeout == "function" ? n.onTimeout : null, b = Date.now();
+      for (; await h(); ) {
+        if (F(b, n.timeout))
+          return w && w(), !1;
+        await y(o, f);
+      }
+      return e;
     }
-    l ? f = await w(l, !0) : a && (f = await w(a, !1));
+    a ? u = await r(a, !0) : l && (u = await r(l, !1));
   } else
-    await u(e, o);
-  return c && typeof c == "function" && c(), f;
+    await y(o, f), u = !0;
+  return s && s(), u;
 }
-const W = {
-  wait: F
+const _ = {
+  wait: k
 };
-function k(n, i) {
-  return i && Date.now() - n >= i;
+function F(t, i) {
+  return i && Date.now() - t >= i;
 }
-function u(n, i) {
-  return i && i(), new Promise((e) => {
+function y(t, i) {
+  return i && i(), new Promise((o) => {
     setTimeout(() => {
-      e();
-    }, n);
+      o();
+    }, t);
   });
 }
 export {
-  W as default
+  _ as default
 };
