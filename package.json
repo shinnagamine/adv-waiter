@@ -1,6 +1,6 @@
 {
   "name": "adv-waiter",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "AdvWaiter is a JavaScript library/module that provides a couple of wait functions to simplify the source code and make it more readable.",
   "main": "dist/adv-waiter.mjs",
   "scripts": {
