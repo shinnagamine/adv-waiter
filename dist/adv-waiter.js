@@ -1,11 +1,11 @@
-(function(n,i){typeof exports=="object"&&typeof module<"u"?i(exports):typeof define=="function"&&define.amd?define(["exports"],i):(n=typeof globalThis<"u"?globalThis:n||self,i(n["adv-waiter"]={}))})(this,function(n){"use strict";/**
+(function(o,u){typeof exports=="object"&&typeof module<"u"?module.exports=u():typeof define=="function"&&define.amd?define(u):(o=typeof globalThis<"u"?globalThis:o||self,o["adv-waiter"]=u())})(this,function(){"use strict";/**
  * adv-waiter.js
  *
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.5
+ * @version     : 1.1.6
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
- */async function i(e,o){const u=e&&isFinite(e)?e:100,t=o||(e&&typeof e=="object"?e:{}),c=t.while&&typeof t.while=="function"?t.while:null,a=t.until&&typeof t.until=="function"?t.until:null,f=t.callback&&typeof t.callback=="function"?t.callback:null,s=t.showDatetime;let w=null;if(c||a){async function r(m,h){const y=t.resultExistsIn;if(y){const _=t.timeout,T=t.onTimeout&&typeof t.onTimeout=="function"?t.onTimeout:null,D=Date.now();let b;for(;y.includes(b=await m())===h;){if(p(D,_))return T&&T(),null;await l(u,s)}return b}else for(;await m()===h;)await l(u,s)}c?w=await r(c,!0):a&&(w=await r(a,!1))}else await l(u,s);return f&&typeof f=="function"&&f(),w}const d={wait:i};window.AdvWaiter=d;function p(e,o){return o&&Date.now()-e>=o}function l(e,o){return o&&console.log(new Date),new Promise(u=>{setTimeout(()=>{u()},e)})}n.default=d,n.wait=i,Object.defineProperties(n,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}})});
+ */async function o(n,i){const e=n&&isFinite(n)?n:100,t=i||(n&&typeof n=="object"?n:{}),a=t.while&&typeof t.while=="function"?t.while:null,f=t.until&&typeof t.until=="function"?t.until:null,s=t.callback&&typeof t.callback=="function"?t.callback:null,c=t.onWaiting&&typeof t.onWaiting=="function"?t.onWaiting:null;let w=null;if(a||f){async function d(r,m){const y=t.resultExistsIn;if(y){const b=t.timeout,h=t.onTimeout&&typeof t.onTimeout=="function"?t.onTimeout:null,F=Date.now();let T;for(;y.includes(T=await r())===m;){if(p(F,b))return h&&h(),null;await l(e,c)}return T}else if(m)for(;await r();)await l(e,c);else for(;!await r();)await l(e,c)}a?w=await d(a,!0):f&&(w=await d(f,!1))}else await l(e,c);return s&&typeof s=="function"&&s(),w}const u={wait:o};function p(n,i){return i&&Date.now()-n>=i}function l(n,i){return i&&i(),new Promise(e=>{setTimeout(()=>{e()},n)})}return u});

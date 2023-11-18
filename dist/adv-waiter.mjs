@@ -4,50 +4,51 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.5
+ * @version     : 1.1.6
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
  */
-async function d(n, i) {
-  const e = n && isFinite(n) ? n : 100, t = i || (n && typeof n == "object" ? n : {}), o = t.while && typeof t.while == "function" ? t.while : null, u = t.until && typeof t.until == "function" ? t.until : null, c = t.callback && typeof t.callback == "function" ? t.callback : null, l = t.showDatetime;
-  let a = null;
-  if (o || u) {
-    async function f(w, r) {
+async function F(n, i) {
+  const e = n && isFinite(n) ? n : 100, t = i || (n && typeof n == "object" ? n : {}), l = t.while && typeof t.while == "function" ? t.while : null, a = t.until && typeof t.until == "function" ? t.until : null, c = t.callback && typeof t.callback == "function" ? t.callback : null, o = t.onWaiting && typeof t.onWaiting == "function" ? t.onWaiting : null;
+  let f = null;
+  if (l || a) {
+    async function w(s, r) {
       const m = t.resultExistsIn;
       if (m) {
-        const T = t.timeout, h = t.onTimeout && typeof t.onTimeout == "function" ? t.onTimeout : null, b = Date.now();
-        let y;
-        for (; m.includes(y = await w()) === r; ) {
-          if (F(b, T))
-            return h && h(), null;
-          await s(e, l);
+        const h = t.timeout, y = t.onTimeout && typeof t.onTimeout == "function" ? t.onTimeout : null, b = Date.now();
+        let T;
+        for (; m.includes(T = await s()) === r; ) {
+          if (k(b, h))
+            return y && y(), null;
+          await u(e, o);
         }
-        return y;
-      } else
-        for (; await w() === r; )
-          await s(e, l);
+        return T;
+      } else if (r)
+        for (; await s(); )
+          await u(e, o);
+      else
+        for (; !await s(); )
+          await u(e, o);
     }
-    o ? a = await f(o, !0) : u && (a = await f(u, !1));
+    l ? f = await w(l, !0) : a && (f = await w(a, !1));
   } else
-    await s(e, l);
-  return c && typeof c == "function" && c(), a;
+    await u(e, o);
+  return c && typeof c == "function" && c(), f;
 }
-const D = {
-  wait: d
+const W = {
+  wait: F
 };
-window.AdvWaiter = D;
-function F(n, i) {
+function k(n, i) {
   return i && Date.now() - n >= i;
 }
-function s(n, i) {
-  return i && console.log(/* @__PURE__ */ new Date()), new Promise((e) => {
+function u(n, i) {
+  return i && i(), new Promise((e) => {
     setTimeout(() => {
       e();
     }, n);
   });
 }
 export {
-  D as default,
-  d as wait
+  W as default
 };
