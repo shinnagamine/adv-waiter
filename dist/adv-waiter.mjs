@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.8
+ * @version     : 1.1.10
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -45,5 +45,6 @@ function y(t, i) {
   });
 }
 export {
-  _ as default
+  _ as default,
+  k as wait
 };
