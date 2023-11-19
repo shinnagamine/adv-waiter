@@ -4,7 +4,7 @@
  * @module      : adv-waiter
  * @description : This software is a JavaScript library that provides a couple of wait functions
  *                to simplify the source code and make it more readable.
- * @version     : 1.1.8
+ * @version     : 1.1.10
  * @author      : Shin Nagamine
  * @license     : Released under the MIT license.
  *                https://opensource.org/licenses/MIT
@@ -258,7 +258,7 @@
  *     If 'options.existsIn' is specified, returns the result of the specified function.
  *     If timeout, returns false.
  */
-async function wait(intervalOrOpts, options) {
+export async function wait(intervalOrOpts, options) {
 	// Determine the wait interval based on the argument.
 	const _interval = (intervalOrOpts && isFinite(intervalOrOpts)) ? intervalOrOpts : 100;
 
